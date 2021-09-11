@@ -8,7 +8,7 @@ export default class Visuals {
   renderer;
   orbitControls;
   fontLoader;
-  text;
+  // text;
   sizes: { width: number; height: number };
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -32,9 +32,9 @@ export default class Visuals {
     this.orbitControls.enableDamping = true;
     this.orbitControls.enabled = false;
     this.fontLoader = new THREE.FontLoader();
-    this.text = new THREE.Group();
-    this.scene.add(this.text);
-    this.createText("Welcome to SafeSpace, join the waiting list");
+    // this.text = new THREE.Group();
+    // this.scene.add(this.text);
+    // this.createText("Welcome to SafeSpace, join the waiting list");
   }
   configRenderer(): void {
     this.renderer.setSize(this.sizes.width, this.sizes.height);
@@ -51,7 +51,7 @@ export default class Visuals {
     this.renderer.setSize(this.sizes.width, this.sizes.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   }
-  createText(text: string, offsetY: number = 0): void {
+  createText(target: THREE.Group, text: string, offsetY: number = 0): void {
     this.fontLoader.load("/fonts/ArkitechStencil_Regular.json", (font) => {
       const textGeometry = new THREE.TextGeometry(text, {
         font,
@@ -70,7 +70,7 @@ export default class Visuals {
       const textMesh = new THREE.Mesh(textGeometry, textMaterial);
       // textMesh.position.set(2, 2, 2);
       textMesh.position.y += offsetY;
-      this.text.add(textMesh);
+      target.add(textMesh);
     });
   }
 }
