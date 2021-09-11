@@ -3,6 +3,7 @@ import Visuals from "./Visuals";
 import gsap from "gsap";
 
 const runThreeCanvas = (): void => {
+  // initalViewSet doesn't belong inside hashchangehandler, TO:DO
   let canvas: HTMLCanvasElement | null;
   canvas = document.querySelector("#canvas");
   if (canvas) {
@@ -32,10 +33,57 @@ const runThreeCanvas = (): void => {
     gateText.name = "gate";
     visuals.createText(gateText, "Comng soon :-)");
 
-    let makeTransition: boolean = false;
-    const leaveView = (): void => {
-      const currentView = window.location.hash.slice(1);
-      const objectToRemove = visuals.scene.getObjectByName(currentView);
+    // set inital view
+    let initialViewSet: boolean = false;
+    if (window.location.hash === "#home") {
+      visuals.scene.background = homeBGcolor;
+      visuals.scene.add(homeText);
+      initialViewSet = true;
+    } else {
+      window.location.assign(`http://localhost:3000/#home`);
+    }
+    let currentView: string;
+
+    const hashChangeHandler = (e: any) => {
+      if (!initialViewSet) {
+        visuals.scene.background = homeBGcolor;
+        visuals.scene.add(homeText);
+        currentView = "home";
+        initialViewSet = true;
+        // transitioning = false;
+      } else {
+        const newView = e.newURL.split("#")[1];
+        if (
+          (newView !== "home" &&
+            newView !== "mission" &&
+            newView !== "team" &&
+            newView !== "gate") ||
+          newView === currentView
+        ) {
+          console.log("invalid path or already on set path");
+          return;
+        } else {
+          leaveView(currentView);
+          enterView(newView);
+        }
+      }
+    };
+    window.addEventListener("hashchange", hashChangeHandler);
+
+    const transitionHandler = (e: WheelEvent): void => {
+      if (!transitioning) {
+        if (e.deltaY > 100) {
+          doTransition("up");
+        } else if (e.deltaY < -100) {
+          doTransition("down");
+        }
+      }
+    };
+    window.addEventListener("wheel", transitionHandler);
+
+    let transitioning: boolean = false;
+    const leaveView = (leaveView: string): void => {
+      const objectToRemove = visuals.scene.getObjectByName(leaveView);
       gsap.to(overlayMaterial.uniforms.uAlpha, {
         duration: 2,
         value: 1,
@@ -44,40 +92,44 @@ const runThreeCanvas = (): void => {
         },
       });
     };
-    const enterView = (goToPage: string): void => {
+    const enterView = (newView: string): void => {
       gsap.to(overlayMaterial.uniforms.uAlpha, {
         delay: 2,
         duration: 2,
         value: 0,
         onStart: () => {
-          switch (goToPage) {
+          switch (newView) {
             case "home":
               visuals.scene.background = homeBGcolor;
               visuals.scene.add(homeText);
+              currentView = "home";
               break;
             case "mission":
               visuals.scene.background = missionBGcolor;
               visuals.scene.add(missionText);
+              currentView = "mission";
               break;
             case "team":
               visuals.scene.background = teamBGcolor;
               visuals.scene.add(teamText);
+              currentView = "team";
               break;
             case "gate":
               visuals.scene.background = gateBGcolor;
               visuals.scene.add(gateText);
+              currentView = "gate";
               break;
             default:
               visuals.scene.background = homeBGcolor;
               visuals.scene.add(homeText);
+              currentView = "home";
               break;
           }
-          makeTransition = false;
+          transitioning = false;
         },
       });
     };
-    const setGoToPage = (direction: string): string => {
-      const currentView = window.location.hash.slice(1);
+    const setGoToPage = (direction: string, currentView: string): string => {
       let goToPage = "";
       switch (currentView) {
         case "home":
@@ -97,42 +149,18 @@ const runThreeCanvas = (): void => {
       }
       return goToPage;
     };
-    const doTransition = (
-      direction: string,
-      isInitial: boolean = false
-    ): void => {
-      makeTransition = true;
+    const doTransition = (direction: string): void => {
+      transitioning = true;
       let goToPage: string;
-      if (isInitial) {
-        goToPage = "home";
-        window.location.assign(`http://localhost:3000/#home`);
-        visuals.scene.background = homeBGcolor;
-        visuals.scene.add(homeText);
-        makeTransition = false;
+      goToPage = setGoToPage(direction, currentView);
+      if (goToPage === currentView) {
+        transitioning = false;
         return;
       }
-      goToPage = setGoToPage(direction);
+      console.log(goToPage);
       const url = `http://localhost:3000/#${goToPage}`;
-      if (url === window.location.href) {
-        makeTransition = false;
-        return;
-      }
-      leaveView();
       window.location.assign(url);
-      enterView(goToPage);
     };
-    const transitionHandler = (e: WheelEvent): void => {
-      if (!makeTransition) {
-        if (e.deltaY > 100) {
-          doTransition("up");
-        } else if (e.deltaY < -100) {
-          doTransition("down");
-        }
-      }
-    };
-    doTransition("up", true);
-    // TO-DO: handle transition via hashchange eventlistener to enable menu routng in future
-    window.addEventListener("wheel", transitionHandler);
 
     // transition screen
     const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1);
@@ -159,8 +187,6 @@ const runThreeCanvas = (): void => {
     visuals.scene.add(overlayScreen);
 
     const tick = (): void => {
-      if (makeTransition) {
-      }
       visuals.renderer.render(visuals.scene, visuals.camera);
       window.requestAnimationFrame(tick);
     };

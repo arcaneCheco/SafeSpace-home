@@ -8,7 +8,6 @@ export default class Visuals {
   renderer;
   orbitControls;
   fontLoader;
-  // text;
   sizes: { width: number; height: number };
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -32,9 +31,6 @@ export default class Visuals {
     this.orbitControls.enableDamping = true;
     this.orbitControls.enabled = false;
     this.fontLoader = new THREE.FontLoader();
-    // this.text = new THREE.Group();
-    // this.scene.add(this.text);
-    // this.createText("Welcome to SafeSpace, join the waiting list");
   }
   configRenderer(): void {
     this.renderer.setSize(this.sizes.width, this.sizes.height);
