@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@types/component-emitter": "^1.2.10",
+    "@types/nodemailer": "^6.4.4",
     "@types/react-router-dom": "^5.1.8"
   }
 }
