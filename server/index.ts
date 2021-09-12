@@ -1,6 +1,7 @@
 import express from "express";
 import nodemailer from "nodemailer";
 import cors from "cors";
+import db from "./db/db";
 const app = express();
 import dotenv from "dotenv";
 dotenv.config();
@@ -28,19 +29,23 @@ transporter.verify((err, success) => {
     : console.log(`=== Server is ready to take messages: ${success} ===`);
 });
 
-app.post("/send", function (req, res) {
+app.post("/send", (req, res) => {
+  const clientMail: string = req.body.clientMail;
   let mailOptions = {
     from: "test@gmail.com",
-    to: `${req.body.clientMail}`,
+    to: `${clientMail}`,
     subject: "Message from SafeSpace",
     text: "You up?",
   };
-  transporter.sendMail(mailOptions, function (err, data) {
+  transporter.sendMail(mailOptions, (err, data) => {
     if (err) {
       console.log(err);
       res.send("Email not sent..");
     } else {
       console.log("Email sent successfully");
+      db.run(
+        `INSERT INTO CustomerWaitingList(email) VALUES ('${clientMail}');`
+      );
       res.status(250).send("Email sent");
     }
   });

@@ -1,6 +1,6 @@
 import * as pg from "pg";
 
-export default class DB {
+class DB {
   pool;
   query;
   constructor() {
@@ -19,3 +19,5 @@ export default class DB {
     return res.rows;
   }
 }
+
+export default new DB();
