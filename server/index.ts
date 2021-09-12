@@ -1,10 +1,14 @@
 import express from "express";
 import nodemailer from "nodemailer";
+import cors from "cors";
 const app = express();
 import dotenv from "dotenv";
 dotenv.config();
 
 const PORT = process.env.PORT || 3001;
+
+app.use(express.json());
+app.use(cors());
 
 let transporter = nodemailer.createTransport({
   service: "gmail",
@@ -27,13 +31,14 @@ transporter.verify((err, success) => {
 app.post("/send", function (req, res) {
   let mailOptions = {
     from: "test@gmail.com",
-    to: process.env.EMAIL,
-    subject: "Nodemailer API",
-    text: "Hi from your nodemailer API",
+    to: `${req.body.clientMail}`,
+    subject: "Message from SafeSpace",
+    text: "You up?",
   };
   transporter.sendMail(mailOptions, function (err, data) {
     if (err) {
-      console.log("Error " + err);
+      console.log(err);
+      res.send("Email not sent..");
     } else {
       console.log("Email sent successfully");
       res.status(250).send("Email sent");
