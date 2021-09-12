@@ -23,6 +23,19 @@ transporter.verify((err, success) => {
     ? console.log(err)
     : console.log(`=== Server is ready to take messages: ${success} ===`);
 });
+let mailOptions = {
+  from: "test@gmail.com",
+  to: process.env.EMAIL,
+  subject: "Nodemailer API",
+  text: "Hi from your nodemailer API",
+};
+transporter.sendMail(mailOptions, function (err, data) {
+  if (err) {
+    console.log("Error " + err);
+  } else {
+    console.log("Email sent successfully");
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`server running at http://localhost:${PORT}`);
