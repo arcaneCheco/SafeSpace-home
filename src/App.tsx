@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import runThreeCanvas from "./runThreeCanvas";
-import WaitingListForm from "./WaitinglistFrom";
+// import WaitingListForm from "./WaitinglistFrom";
 
 const App = () => {
   useEffect(() => {
@@ -13,7 +13,7 @@ const App = () => {
       <div className="navigation-helper">
         <div className="nav-message">Scroll to Navigate</div>
       </div>
-      <WaitingListForm />
+      {/* <WaitingListForm /> */}
     </div>
   );
 };
