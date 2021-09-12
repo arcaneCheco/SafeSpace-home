@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import runThreeCanvas from "./runThreeCanvas";
-// import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom"
+import WaitingListForm from "./WaitinglistFrom";
 
 const App = () => {
   useEffect(() => {
@@ -10,6 +10,10 @@ const App = () => {
   return (
     <div>
       <canvas id="canvas"></canvas>
+      <div className="navigation-helper">
+        <div className="nav-message">Scroll to Navigate</div>
+      </div>
+      <WaitingListForm />
     </div>
   );
 };

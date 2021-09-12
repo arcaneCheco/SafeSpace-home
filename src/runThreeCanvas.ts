@@ -44,7 +44,23 @@ const runThreeCanvas = (): void => {
       window.location.assign(`http://localhost:3000/#home`);
     }
 
+    // add nav helper
+    let navHelperRequired: boolean = true;
+    let navHelperTimer: NodeJS.Timeout;
+    let navHelperElement: HTMLElement | null = null;
+    if (navHelperRequired) {
+      navHelperTimer = setTimeout(() => {
+        navHelperElement = document.querySelector<HTMLElement>(".nav-message");
+        if (navHelperElement) {
+          Object.assign(navHelperElement.style, { opacity: 1 });
+        }
+      }, 3000);
+    }
+
     const hashChangeHandler = (e: any) => {
+      if (navHelperElement) {
+        Object.assign(navHelperElement.style, { opacity: 0 });
+      }
       if (!initialViewSet) {
         initialViewSet = true;
         return;
@@ -67,6 +83,10 @@ const runThreeCanvas = (): void => {
     window.addEventListener("hashchange", hashChangeHandler);
 
     const transitionHandler = (e: WheelEvent): void => {
+      if (navHelperRequired) {
+        clearTimeout(navHelperTimer);
+        navHelperRequired = false;
+      }
       if (!transitioning) {
         if (e.deltaY > 100) {
           doTransition("up");

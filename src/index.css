@@ -7,8 +7,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
 }
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+.navigation-helper {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  width: 8rem;
+}
+.navigation-helper .nav-message {
+  position: absolute;
+  left: -4rem;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: large;
+  opacity: 0;
+  transition: 1s;
+  will-change: opacity;
+}
+.waiting-form {
+  position: absolute;
+  left: 5%;
+  top: 50%;
 }
