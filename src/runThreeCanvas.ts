@@ -3,7 +3,6 @@ import Visuals from "./Visuals";
 import gsap from "gsap";
 
 const runThreeCanvas = (): void => {
-  // initalViewSet doesn't belong inside hashchangehandler, TO:DO
   let canvas: HTMLCanvasElement | null;
   canvas = document.querySelector("#canvas");
   if (canvas) {
@@ -35,37 +34,34 @@ const runThreeCanvas = (): void => {
 
     // set inital view
     let initialViewSet: boolean = false;
+    let currentView: string;
+    currentView = "home";
+    visuals.scene.background = homeBGcolor;
+    visuals.scene.add(homeText);
     if (window.location.hash === "#home") {
-      visuals.scene.background = homeBGcolor;
-      visuals.scene.add(homeText);
       initialViewSet = true;
     } else {
       window.location.assign(`http://localhost:3000/#home`);
     }
-    let currentView: string;
 
     const hashChangeHandler = (e: any) => {
       if (!initialViewSet) {
-        visuals.scene.background = homeBGcolor;
-        visuals.scene.add(homeText);
-        currentView = "home";
         initialViewSet = true;
-        // transitioning = false;
+        return;
+      }
+      const newView = e.newURL.split("#")[1];
+      if (
+        (newView !== "home" &&
+          newView !== "mission" &&
+          newView !== "team" &&
+          newView !== "gate") ||
+        newView === currentView
+      ) {
+        console.log("invalid path or already on set path");
+        return;
       } else {
-        const newView = e.newURL.split("#")[1];
-        if (
-          (newView !== "home" &&
-            newView !== "mission" &&
-            newView !== "team" &&
-            newView !== "gate") ||
-          newView === currentView
-        ) {
-          console.log("invalid path or already on set path");
-          return;
-        } else {
-          leaveView(currentView);
-          enterView(newView);
-        }
+        leaveView(currentView);
+        enterView(newView);
       }
     };
     window.addEventListener("hashchange", hashChangeHandler);
