@@ -23,18 +23,22 @@ transporter.verify((err, success) => {
     ? console.log(err)
     : console.log(`=== Server is ready to take messages: ${success} ===`);
 });
-let mailOptions = {
-  from: "test@gmail.com",
-  to: process.env.EMAIL,
-  subject: "Nodemailer API",
-  text: "Hi from your nodemailer API",
-};
-transporter.sendMail(mailOptions, function (err, data) {
-  if (err) {
-    console.log("Error " + err);
-  } else {
-    console.log("Email sent successfully");
-  }
+
+app.post("/send", function (req, res) {
+  let mailOptions = {
+    from: "test@gmail.com",
+    to: process.env.EMAIL,
+    subject: "Nodemailer API",
+    text: "Hi from your nodemailer API",
+  };
+  transporter.sendMail(mailOptions, function (err, data) {
+    if (err) {
+      console.log("Error " + err);
+    } else {
+      console.log("Email sent successfully");
+      res.status(250).send("Email sent");
+    }
+  });
 });
 
 app.listen(PORT, () => {
