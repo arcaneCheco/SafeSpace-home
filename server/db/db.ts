@@ -8,7 +8,7 @@ class DB {
       user: "safespace_user",
       host: "localhost",
       database: "safespace",
-      password: "sm@llMoon47",
+      password: process.env.DB_WORD,
       port: 5432,
     });
     this.query = "";
